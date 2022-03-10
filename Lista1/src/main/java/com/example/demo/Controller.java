@@ -36,19 +36,22 @@ public class Controller {
     }
 
     @GetMapping(value = "register")
-    public String registerUser(@RequestParam String name) {
+    public Map<String, String> registerUser(@RequestParam String name) {
         map.put(name, map.getOrDefault(name, 0) + 1);
-        return "{status: OK, count: " + map.get(name) + "}";
+        Map<String, String> tmpMap = new HashMap<String, String>();
+        tmpMap.put("status", "OK");
+        tmpMap.put("count", map.get(name).toString());
+        return tmpMap;
     }
 
     @GetMapping(value = "delete")
     public String deleteUser(@RequestParam String name) {
-        map.put(name, 0);
+        map.remove(name);
         return "user " + name + " deleted";
     }
 
     @GetMapping(value = "stats")
-    public String getStats(@RequestParam(required = false) String mode) {
+    public Map<String, Integer> getStats(@RequestParam(required = false) String mode) {
         Map<String, Integer> sorted = new HashMap<String, Integer>();
         if (mode == null) {
             sorted = map.entrySet().stream()
@@ -70,7 +73,7 @@ public class Controller {
             sorted = Sort(new_map);
         }
 
-        return sorted.toString();
+        return sorted;
     }
 
 }
